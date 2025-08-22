@@ -92,7 +92,7 @@ def add_to_stream(c):
 if __name__ == "__main__":
     output_stream = []      # stores characters that are going to be printed
     ostream_state = ""      # state when ouput stream was last populated; used for flushing stream
-    s = input() + "\n"      # add "\n" to output stream at the end
+    s = input() + "\n"      # add "\n" to conveniently flush output stream at the end
     n = len(s)
 
     state = "start"
@@ -107,6 +107,7 @@ if __name__ == "__main__":
             print_error(s[i])
             break
         
+        # valid transition, do operations of state transition
         for oper in transition[state][next_state]:
             if oper == "add":
                 add_to_stream(s[i])
@@ -115,3 +116,4 @@ if __name__ == "__main__":
                 flush_stream()
         
         state = next_state
+        
