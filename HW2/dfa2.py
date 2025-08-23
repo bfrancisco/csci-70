@@ -4,55 +4,80 @@ import os
 # only stores all valid next states for each state. if the next state is not valid, it should be an error
 # format: transition[state][next_state] = {operations}
 # operations: add - add_to_stream(), flush - flush_output()
+# states: start | digit | plus | minus | equal1 | equal2 | white | other
 TRANSITION = {
     "start" : {
+        "start" : [],
         "digit" : ["add"], 
         "plus" : ["add"], 
         "minus" : ["add"], 
         "equal1" : ["add"],
+        "equal2" : ["error_impossible"],
         "white" : [],
+        "other" : ["error"],
     },
     "digit" : {
+        "start" : [],
         "digit" : ["add"], 
         "plus" : ["flush", "add"], 
         "minus" : ["flush", "add"], 
         "equal1" : ["flush", "add"],
+        "equal2" : ["error_impossible"],
         "white" : ["flush"],
+        "other" : ["error"],
     },
     "plus" : {
+        "start" : [],
         "digit" : ["flush", "add"],
         "plus" : ["flush", "add"], 
         "minus" : ["flush", "add"],
         "equal1" : ["flush", "add"],
+        "equal2" : ["error_impossible"],
         "white" : ["flush"],
+        "other" : ["error"],
     },
     "minus" : {
+        "start" : [],
         "digit" : ["flush", "add"],
         "plus" : ["flush", "add"], 
         "minus" : ["flush", "add"],
         "equal1" : ["flush", "add"],
+        "equal2" : ["error_impossible"],
         "white" : ["flush"],
+        "other" : ["error"],
     },
     "equal1" : {
+        "start" : ["error"],
+        "digit" : ["error"],
+        "plus" : ["error"], 
+        "minus" : ["error"],
+        "equal1" : ["error"],
         "equal2" : ["add"],
+        "white" : ["error"],
+        "other" : ["error"],
     },
     "equal2" : {
+        "start" : [],
         "digit" : ["flush", "add"],
         "plus" : ["flush", "add"], 
         "minus" : ["flush", "add"],
-        "white" : ["flush"],
         "equal1" : ["flush", "add"],
+        "equal2" : ["error_impossible"],
+        "white" : ["flush"],
+        "other" : ["error"],
     },
     "white" : {
+        "start" : [],
         "digit" : ["flush", "add"],
         "plus" : ["flush", "add"], 
         "minus" : ["flush", "add"],
         "equal1" : ["flush"],
+        "equal2" : ["error_impossible"],
         "white" : [],
+        "other" : ["error"],
     },
 }
 
-# dependent/unfinished states
 DEPENDENT_STATES = set(["equal1"])
 
 DIGITS = set([str(x) for x in range(1, 10)])
@@ -77,6 +102,11 @@ def get_next_state(c, cur_state):
 def print_error(error_char, output_file):
     with open(output_file, "a") as f:
         f.write(f'Lexical Error reading character "{error_char}"\n')
+
+def unknown_error(i, output_file):
+    with open(output_file, "a") as f:
+        f.write(f'error at index {i}')
+
 
 def flush_stream(output_file):
     if not output_stream:
@@ -115,18 +145,7 @@ if __name__ == "__main__":
             # iterate through characters, do necessary operations per state transition
             for i in range(n):
                 next_state = get_next_state(s[i], state)
-
-                # invalid transition.
-                if next_state not in TRANSITION[state]:                  
-                    # handles dependent/unfinished state.
-                    if state in DEPENDENT_STATES:
-                        print_error(output_stream[-1], output_file)
-                    # handles lexical error for 'other' characters
-                    else:
-                        flush_stream(output_file)
-                        print_error(s[i], output_file)
-                    break
-                
+                print(i, state, next_state)
                 # valid transition, do operations of state transition
                 for oper in TRANSITION[state][next_state]:
                     if oper == "add":
@@ -134,6 +153,14 @@ if __name__ == "__main__":
                         ostream_state = next_state
                     elif oper == "flush":
                         flush_stream(output_file)
-
+                    elif oper == "error":
+                        if state in DEPENDENT_STATES:
+                            print_error(output_stream[-1], output_file) # incomplete/invalid token
+                        else:
+                            print_error(s[i], output_file)
+                        break
+                    elif oper == "error_impossible":
+                        unknown_error(i, output_file)
+                        break
                 state = next_state
         
