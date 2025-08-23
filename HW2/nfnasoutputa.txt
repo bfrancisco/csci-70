@@ -1,0 +1,8 @@
+NUM 12318
+PLUS	+
+NUM 123
+MINUS	-
+NUM 123
+ASSIGN	==
+NUM 332
+Lexical Error reading character "="
