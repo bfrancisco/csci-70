@@ -23,7 +23,7 @@ TRANSITION = {
         "equal1" : ["flush", "add"],
         "equal2" : ["unk_error"],
         "white" : ["flush"],
-        "other" : ["lex_error"],
+        "other" : ["flush", "lex_error"],
     },
     "plus" : {
         "start" : [],
@@ -33,7 +33,7 @@ TRANSITION = {
         "equal1" : ["flush", "add"],
         "equal2" : ["unk_error"],
         "white" : ["flush"],
-        "other" : ["lex_error"],
+        "other" : ["flush", "lex_error"],
     },
     "minus" : {
         "start" : [],
@@ -43,7 +43,7 @@ TRANSITION = {
         "equal1" : ["flush", "add"],
         "equal2" : ["unk_error"],
         "white" : ["flush"],
-        "other" : ["lex_error"],
+        "other" : ["flush", "lex_error"],
     },
     "equal1" : {
         "start" : ["lex_error"],
@@ -63,7 +63,7 @@ TRANSITION = {
         "equal1" : ["flush", "add"],
         "equal2" : ["unk_error"],
         "white" : ["flush"],
-        "other" : ["lex_error"],
+        "other" : ["flush", "lex_error"],
     },
     "white" : {
         "start" : [],
@@ -134,6 +134,7 @@ def run_scanner(input_file, output_file_str):
     # iterate through characters, do necessary operations per state transition
     for i in range(n):
         next_state = get_next_state(s[i], state)
+        print(i, state, next_state)
         # valid transition, do operations of state transition
         for oper in TRANSITION[state][next_state]:
             if oper == "add":
@@ -146,10 +147,10 @@ def run_scanner(input_file, output_file_str):
                     lex_error(output_stream[-1], output_file_str) # incomplete/invalid token
                 else:
                     lex_error(s[i], output_file_str)
-                break
+                return
             elif oper == "unk_error":
                 unknown_error(i, output_file_str)
-                break
+                return
         state = next_state
         
 if __name__ == "__main__":

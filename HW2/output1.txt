@@ -1,0 +1,2 @@
+NUM 1
+Lexical Error reading character "a"
