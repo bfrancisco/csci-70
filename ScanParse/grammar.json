@@ -1,0 +1,88 @@
+{
+    "start" : "Prg",
+    "terminals" : 
+        [
+            "eps", 
+            "Identifier", ":=", ";", 
+            "PRINT", "(", ")", 
+            "IF", ":", 
+            "String", 
+            "ENDIF",
+            "ELSE",
+            "+", "-", "*", "/", "**",
+            "Number",
+            "SQRT",
+            "<", "=", ">", "<=", "!=", ">="
+    ],
+    "prod" :
+        {
+            "Prg" : [
+                ["Blk", "EndOfFile"]
+            ],
+            "Blk" : [
+                ["Stm", "Blk"],
+                ["eps"]
+            ],
+            "Stm" : [
+                ["Identifier", ":=", "Exp", ";"],
+                ["PRINT", "(", "Arg", "Argfollow", ")", ";"],
+                ["IF", "Cnd", ":", "Blk", "Iffollow"]
+            ],
+            "Argfollow" : [
+                [",", "Arg", "Argfollow"],
+                ["eps"]
+            ],
+            "Arg" : [
+                ["String"],
+                ["Exp"]
+            ],
+            "Iffollow" : [
+                ["ENDIF", ";"],
+                ["ELSE", "Blk", "ENDIF", ";"]
+            ],
+            "Exp" : [
+                ["Trm", "Trmfollow"]
+            ],
+            "Trmfollow" : [
+                ["+", "Trm", "Trmfollow"],
+                ["-", "Trm", "Trmfollow"],
+                ["eps"]
+            ],
+            "Trm" : [
+                ["Fac", "Facfollow"]
+            ],
+            "Facfollow" : [
+                ["*", "Fac", "Facfollow"],
+                ["/", "Fac", "Facfollow"],
+                ["eps"]
+            ],
+            "Fac" : [
+                ["Lit", "Litfollow"]
+            ],
+            "Litfollow" : [
+                ["**", "Lit", "Litfollow"],
+                ["eps"]
+            ],
+            "Lit" : [
+                ["-", "Val"],
+                ["Val"]
+            ],
+            "Val" : [
+                ["Identifier"],
+                ["Number"],
+                ["SQRT", "(", "Exp", ")"],
+                ["(", "Exp", ")"]
+            ],
+            "Cnd" : [
+                ["Exp", "Rel", "Exp"]
+            ],
+            "Rel" : [
+                ["<"],
+                ["="],
+                [">"],
+                ["<="],
+                ["!="],
+                [">="]
+            ]
+        }
+}
