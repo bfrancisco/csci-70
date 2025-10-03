@@ -1,81 +1,111 @@
-Identifier       discriminant
-Assign           :=
-Number           10
-Raise            **
-Number           2
-Minus            -
-LeftParen        (
-Number           4
-Multiply         *
-Number           5.5
-Multiply         *
-LeftParen        (
-Minus            -
-Number           3
-RightParen       )
-RightParen       )
-Semicolon        ;
+Identifier       just
+Identifier       a
+Identifier       bunch
+Identifier       of
+Identifier       identifiers
+Identifier       these
+Identifier       have
+Identifier       numb3Rs
+Identifier       and
+Identifier       under_sc0res
+Number           1
+Identifier       abc
+Identifier       abc1
 If               IF
-Identifier       discriminant
-GTEqual          >=
-Number           0
-Colon            :
-Identifier       root1
-Assign           :=
-LeftParen        (
-Minus            -
-Number           10
-Plus             +
-Sqrt             SQRT
-LeftParen        (
-Identifier       discriminant
-RightParen       )
-RightParen       )
-Divide           /
-LeftParen        (
-Number           2
-Multiply         *
-Number           5.5
-RightParen       )
-Semicolon        ;
-Identifier       root2
-Assign           :=
-LeftParen        (
-Minus            -
-Number           10
-Minus            -
-Sqrt             SQRT
-LeftParen        (
-Identifier       discriminant
-RightParen       )
-RightParen       )
-Divide           /
-LeftParen        (
-Number           2
-Multiply         *
-Number           5.5
-RightParen       )
-Semicolon        ;
+Identifier       I
 Print            PRINT
-LeftParen        (
-String           "roots are"
-Comma            ,
-Identifier       root1
-Comma            ,
-Identifier       root2
-RightParen       )
-Semicolon        ;
 Else             ELSE
-Print            PRINT
-LeftParen        (
-String           "no real roots"
-RightParen       )
-Semicolon        ;
+Colon            :
+Number           12321
+Number           98.76
+Lexical Error: Illegal character/character sequence
+Error
+Number           76
+Lexical Error: Invalid number format
+Error
+Number           1.2e45
+Number           9e87
+Number           7E+8
+Number           6E-5
+Lexical Error: Invalid number format
+Error
+Identifier       st
+Lexical Error: Invalid number format
+Error
+Number           3
+String           "string with &%@#$ characters +++--**"
+Lexical Error: Unterminated string
+Error
+Identifier       the
+Identifier       other
+Identifier       half
+Lexical Error: Unterminated string
+Error
+Identifier       aaa
+String           " + "
+Identifier       aaa
+Identifier       how
+Identifier       about
+Lexical Error: Unterminated string
+Error
+String           " aa // "
+If               IF
+Else             ELSE
 Endif            ENDIF
-Semicolon        ;
+Sqrt             SQRT
 Print            PRINT
-LeftParen        (
-String           "end of program"
-RightParen       )
+And              AND
+Or               OR
+Not              NOT
+Identifier       if
+Identifier       else
+Identifier       endif
+Identifier       sqrt
+Identifier       print
+Identifier       and
+Identifier       or
+Identifier       not
+Raise            **
+Multiply         *
+Multiply         *
+Plus             +
+Plus             +
+Minus            -
+Divide           /
+Raise            **
+LessThan         <
+Equal            =
+GreaterThan      >
+GTEqual          >=
+LessThan         <
+Equal            =
+NotEqual         !=
+Lexical Error: Illegal character/character sequence
+Error
+Identifier       uch
+Colon            :
 Semicolon        ;
+Equal            =
+Assign           :=
+Semicolon        ;
+Identifier       _
+Identifier       _x
+Identifier       x_
+Number           5
+Plus             +
+Number           5
+Plus             +
+Number           5
+Identifier       a
+Raise            **
+Identifier       b
+Raise            **
+Identifier       c
+Number           3
+Minus            -
+Number           2
+Minus            -
+Number           1
+Identifier       the
+Identifier       end
 EndofFile        

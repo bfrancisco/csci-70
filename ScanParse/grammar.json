@@ -1,82 +1,251 @@
 {
-    "start" : "Prg",
-    "terminals" : 
-        [
-            "eps", 
-            "Identifier", ":=", ";", 
-            "PRINT", "(", ")", 
-            "IF", ":", 
-            "String", 
-            "ENDIF",
-            "ELSE",
-            "+", "-", "*", "/", "**",
-            "Number",
-            "SQRT",
-            "<", "=", ">", "<=", "!=", ">="
-    ],
-    "prod" :
+    "root" : "Prg",
+    "terminals" : [
         {
-            "Prg" : [
+        "token": "Epsilon",
+        "symbol": "epsilon"
+        },
+        {
+        "token": "Identifier",
+        "symbol": "Identifier"
+        },
+        {
+        "token": "Print",
+        "symbol": "PRINT"
+        },
+        {
+        "token": "If",
+        "symbol": "IF"
+        },
+        {
+        "token": "Else",
+        "symbol": "ELSE"
+        },
+        {
+        "token": "Endif",
+        "symbol": "ENDIF"
+        },
+        {
+        "token": "Sqrt",
+        "symbol": "SQRT"
+        },
+        {
+        "token": "And",
+        "symbol": "AND"
+        },
+        {
+        "token": "Or",
+        "symbol": "OR"
+        },
+        {
+        "token": "Not",
+        "symbol": "NOT"
+        },
+        {
+        "token": "Number",
+        "symbol": "Number"
+        },
+        {
+        "token": "String",
+        "symbol": "String"
+        },
+        {
+        "token": "Assign",
+        "symbol": ":="
+        },
+        {
+        "token": "Semicolon",
+        "symbol": ";"
+        },
+        {
+        "token": "Colon",
+        "symbol": ":"
+        },
+        {
+        "token": "Comma",
+        "symbol": ","
+        },
+        {
+        "token": "LeftParen",
+        "symbol": "("
+        },
+        {
+        "token": "RightParen",
+        "symbol": ")"
+        },
+        {
+        "token": "Plus",
+        "symbol": "+"
+        },
+        {
+        "token": "Minus",
+        "symbol": "-"
+        },
+        {
+        "token": "Multiply",
+        "symbol": "*"
+        },
+        {
+        "token": "Divide",
+        "symbol": "/"
+        },
+        {
+        "token": "Raise",
+        "symbol": "**"
+        },
+        {
+        "token": "LessThan",
+        "symbol": "<"
+        },
+        {
+        "token": "Equal",
+        "symbol": "="
+        },
+        {
+        "token": "GreaterThan",
+        "symbol": ">"
+        },
+        {
+        "token": "LTEqual",
+        "symbol": "<="
+        },
+        {
+        "token": "GTEqual",
+        "symbol": ">="
+        },
+        {
+        "token": "NotEqual",
+        "symbol": "!="
+        },
+        {
+        "token": "EndofFile",
+        "symbol": "EOF"
+        }
+    ],
+    "productions" : [
+        {
+            "Prg": {
+            "transitions": [
                 ["Blk", "EndOfFile"]
-            ],
-            "Blk" : [
+            ]
+            }
+        },
+        {
+            "Blk": {
+            "transitions": [
                 ["Stm", "Blk"],
-                ["eps"]
-            ],
-            "Stm" : [
+                ["epsilon"]
+            ]
+            }
+        },
+        {
+            "Stm": {
+            "transitions": [
                 ["Identifier", ":=", "Exp", ";"],
                 ["PRINT", "(", "Arg", "Argfollow", ")", ";"],
                 ["IF", "Cnd", ":", "Blk", "Iffollow"]
-            ],
-            "Argfollow" : [
+            ]
+            }
+        },
+        {
+            "Argfollow": {
+            "transitions": [
                 [",", "Arg", "Argfollow"],
-                ["eps"]
-            ],
-            "Arg" : [
+                ["epsilon"]
+            ]
+            }
+        },
+        {
+            "Arg": {
+            "transitions": [
                 ["String"],
                 ["Exp"]
-            ],
-            "Iffollow" : [
+            ]
+            }
+        },
+        {
+            "Iffollow": {
+            "transitions": [
                 ["ENDIF", ";"],
                 ["ELSE", "Blk", "ENDIF", ";"]
-            ],
-            "Exp" : [
+            ]
+            }
+        },
+        {
+            "Exp": {
+            "transitions": [
                 ["Trm", "Trmfollow"]
-            ],
-            "Trmfollow" : [
+            ]
+            }
+        },
+        {
+            "Trmfollow": {
+            "transitions": [
                 ["+", "Trm", "Trmfollow"],
                 ["-", "Trm", "Trmfollow"],
-                ["eps"]
-            ],
-            "Trm" : [
+                ["epsilon"]
+            ]
+            }
+        },
+        {
+            "Trm": {
+            "transitions": [
                 ["Fac", "Facfollow"]
-            ],
-            "Facfollow" : [
+            ]
+            }
+        },
+        {
+            "Facfollow": {
+            "transitions": [
                 ["*", "Fac", "Facfollow"],
                 ["/", "Fac", "Facfollow"],
-                ["eps"]
-            ],
-            "Fac" : [
+                ["epsilon"]
+            ]
+            }
+        },
+        {
+            "Fac": {
+            "transitions": [
                 ["Lit", "Litfollow"]
-            ],
-            "Litfollow" : [
+            ]
+            }
+        },
+        {
+            "Litfollow": {
+            "transitions": [
                 ["**", "Lit", "Litfollow"],
-                ["eps"]
-            ],
-            "Lit" : [
-                ["-", "Val"],
-                ["Val"]
-            ],
-            "Val" : [
+                ["epsilon"]
+            ]
+            }
+        },
+        {
+            "Lit": {
+            "transitions": [
+                ["Val"],
+                ["-", "Val"]
+            ]
+            }
+        },
+        {
+            "Val": {
+            "transitions": [
                 ["Identifier"],
                 ["Number"],
                 ["SQRT", "(", "Exp", ")"],
                 ["(", "Exp", ")"]
-            ],
-            "Cnd" : [
+            ]
+            }
+        },
+        {
+            "Cnd": {
+            "transitions": [
                 ["Exp", "Rel", "Exp"]
-            ],
-            "Rel" : [
+            ]
+            }
+        },
+        {
+            "Rel": {
+            "transitions": [
                 ["<"],
                 ["="],
                 [">"],
@@ -84,5 +253,7 @@
                 ["!="],
                 [">="]
             ]
+            }
         }
+    ]
 }

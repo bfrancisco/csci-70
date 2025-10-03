@@ -122,9 +122,8 @@ def initialize_DFA():
     add_transition(state_i=15, is_other=True, next_state=0, token="Error", to_error=True)
 
 
-def gettoken(input_file):
+def gettoken(input_stream):
     initialize_DFA()
-    input_stream = "".join(input_file.readlines())
 
     i = 0
     cur_state = 0
@@ -169,5 +168,6 @@ def gettoken(input_file):
 if __name__ == "__main__":
     FILE = "input.txt"
     with open(FILE, 'r') as input_file:
-        for token in run(input_file):
+        input_stream = "".join(input_file.readlines())
+        for token in gettoken(input_stream):
             print(f'TOKEN: {token}')
