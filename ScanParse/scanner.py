@@ -21,12 +21,13 @@ States = [None for i in range(NO_OF_STATES)]
 LETTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 DIGITS = "0123456789"
 KEYWORDS = ["PRINT", "IF", "ELSE", "ENDIF", "SQRT", "AND", "OR", "NOT"]
+scan_output = [] # to be used in main
 
 def add_transition(state_i, next_state:int, char:str = "", is_other:bool = False, with_pushback:bool = False, token:str = "", to_error:str = False):
     States[state_i].transitions[char] = Transition(next_state=next_state, is_other=is_other, with_pushback=with_pushback, token=token, to_error=to_error)
 
 def initialize_DFA():
-    States[0] = State(description="Initial state", error_mssg="Illegal character/character sequence")
+    States[0] = State(description="Initial state", error_mssg="Lexical Error: Illegal character/character sequence")
     add_transition(state_i=0, char='\n', next_state=0)
     add_transition(state_i=0, char='\t', next_state=0)
     add_transition(state_i=0, char=' ', next_state=0)
@@ -48,7 +49,7 @@ def initialize_DFA():
     add_transition(state_i=0, char='<', next_state=13)
     add_transition(state_i=0, char='>', next_state=14)
     add_transition(state_i=0, char='!', next_state=15)
-    add_transition(state_i=0, is_other=True, next_state=0, to_error=True)
+    add_transition(state_i=0, is_other=True, next_state=0, token="Error", to_error=True)
 
     States[1] = State("Slash")
     add_transition(state_i=1, char='/', next_state=2)
@@ -71,19 +72,19 @@ def initialize_DFA():
     add_transition(state_i=4, char='E', next_state=6)
     add_transition(state_i=4, is_other=True, next_state=0, token="Number", with_pushback=True)
 
-    States[5] = State("Number: ... dot", error_mssg="Invalid number format")
+    States[5] = State("Number: ... dot", error_mssg="Lexical Error: Invalid number format")
     for digit in DIGITS:    add_transition(state_i=5, char=digit, next_state=9)
-    add_transition(state_i=5, is_other=True, next_state=0, to_error=True)
+    add_transition(state_i=5, is_other=True, next_state=0, token="Error", to_error=True)
 
-    States[6] = State("Number: ... e", error_mssg="Invalid number format")
+    States[6] = State("Number: ... e", error_mssg="Lexical Error: Invalid number format")
     for digit in DIGITS:    add_transition(state_i=6, char=digit, next_state=8)
     add_transition(state_i=6, char='+', next_state=7)
     add_transition(state_i=6, char='-', next_state=7)
-    add_transition(state_i=6, is_other=True, next_state=0, to_error=True)
+    add_transition(state_i=6, is_other=True, next_state=0, token="Error", to_error=True)
 
-    States[7] = State("Number: ... +-", error_mssg="Invalid number format")
+    States[7] = State("Number: ... +-", error_mssg="Lexical Error: Invalid number format")
     for digit in DIGITS:    add_transition(state_i=7, char=digit, next_state=8)
-    add_transition(state_i=7, is_other=True, next_state=0, to_error=True)
+    add_transition(state_i=7, is_other=True, next_state=0, token="Error", to_error=True)
 
     States[8] = State("Number: (Float + Exponent) | Exponent")
     for digit in DIGITS:    add_transition(state_i=8, char=digit, next_state=8)
@@ -95,10 +96,10 @@ def initialize_DFA():
     add_transition(state_i=9, char='E', next_state=6)
     add_transition(state_i=9, is_other=True, next_state=0, token="Number", with_pushback=True)
 
-    States[10] = State("String", error_mssg="Unterminated string")
+    States[10] = State("String", error_mssg="Lexical Error: Unterminated string")
     add_transition(state_i=10, char='"', next_state=0, token="String")
     add_transition(state_i=10, is_other=True, next_state=10)
-    add_transition(state_i=10, char='\n', next_state=0, to_error=True)
+    add_transition(state_i=10, char='\n', next_state=0, token="Error", to_error=True)
     
     States[11] = State("Colon")
     add_transition(state_i=11, char='=', next_state=0, token="Assign")
@@ -116,12 +117,12 @@ def initialize_DFA():
     add_transition(state_i=14, char='=', next_state=0, token="GTEqual")
     add_transition(state_i=14, is_other=True, next_state=0, token="GreaterThan", with_pushback=True)
 
-    States[15] = State("Exclamation Point", error_mssg="Illegal character/character sequence")
+    States[15] = State("Exclamation Point", error_mssg="Lexical Error: Illegal character/character sequence")
     add_transition(state_i=15, char='=', next_state=0, token="NotEqual")
-    add_transition(state_i=15, is_other=True, next_state=0, to_error=True)
+    add_transition(state_i=15, is_other=True, next_state=0, token="Error", to_error=True)
 
 
-def run(input_file):
+def gettoken(input_file):
     initialize_DFA()
     input_stream = "".join(input_file.readlines())
 
@@ -145,13 +146,14 @@ def run(input_file):
             token = "".join(buffer).capitalize()
         
         if token:
-            print(f'{token:<17}{"".join(buffer) if token != "EndofFile" else ""}')
-            buffer.clear()
+            if token=="Error":
+                scan_output.append(States[cur_state].error_mssg)
+                scan_output.append(token)
+            else:
+                scan_output.append(f'{token:<17}{"".join(buffer) if token != "EndofFile" else ""}')
 
-        elif trnstn_data.to_error:
-            print(f'Lexical Error: {States[cur_state].error_mssg}')
-            print("Error")
             buffer.clear()
+            yield token
 
         # print(f"CUR CHAR:\t{char}")
         # print(f"CUR STATE:\t{cur_state}\t{States[cur_state].description}")
@@ -160,16 +162,12 @@ def run(input_file):
         # print(f"TOKEN: {token}")
         # print(f"error: {trnstn_data.to_error}")
         # print()
-
         cur_state = trnstn_data.next_state
         i += 1
-
-
-    return ""
-
 
 # for testing
 if __name__ == "__main__":
     FILE = "input.txt"
     with open(FILE, 'r') as input_file:
-        run(input_file)
+        for token in run(input_file):
+            print(f'TOKEN: {token}')

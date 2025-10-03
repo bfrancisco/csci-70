@@ -8,9 +8,9 @@ if __name__ == "__main__":
     for input_file_str in input_files:
         with open(input_file_str, 'r') as input_file:
             # scanner
-            scanner_output = scanner.run(input_file) # output_scanner is list of strings ()
-            
+            for token in scanner.run(input_file):
+                pass
             # IO code
             with open(input_file_str.replace("input", "output_scan"), 'w') as f:
-                f.writelines(scanner_output)
+                f.writelines([line+'\n' for line in scanner.scan_output])
             
